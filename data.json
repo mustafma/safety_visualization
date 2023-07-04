@@ -1,0 +1,39 @@
+{
+    "name": "Robot",
+    "children": [
+    {
+        "name": "Status"
+    },
+    {
+        "name": "Battery"
+    },
+    {
+        "name": "Sensors",
+        "children": [
+        {
+            "name": "Camera"
+        },
+        {
+            "name": "Lidar"
+        },
+        {
+            "name": "GPS"
+        },
+        {
+            "name": "IMU"
+        }
+        ]
+    },
+    {
+        "name": "Actuators",
+        "children": [
+        {
+            "name": "Wheels"
+        },
+        {
+            "name": "Arm"
+        }
+        ]
+    }
+    ]
+}
