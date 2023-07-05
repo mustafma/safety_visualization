@@ -12,7 +12,7 @@ const banner = svg
   .attr("y", 0)
   .attr("width", svgWidth)
   .attr("height", 50)
-  .attr("fill", "#e8c671")
+  .attr("fill", "beige")
   .attr("stroke", "black")
   .attr("stroke-width", 0);
 
@@ -23,7 +23,7 @@ const sidebar = svg
   .attr("y", 50)
   .attr("width", 200)
   .attr("height", svgHeight - 50)
-  .attr("fill", "#e8c671")
+  .attr("fill", "beige")
   .attr("stroke", "black")
   .attr("stroke-width", 0);
 
@@ -81,6 +81,24 @@ sidebarButtons
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
+// Add hover effect to the sidebarbuttons
+sidebarButtons
+  .on("mouseover", function() {
+    d3.select(this).select("rect").attr("fill", "lightgreen");
+  })
+  .on("mouseout", function() {
+    d3.select(this).select("rect").attr("fill", "lightblue");
+  });
+
+// Add hover effect to the bannerbuttons
+bannerButtons
+  .on("mouseover", function() {
+    d3.select(this).select("rect").attr("fill", "lightgreen");
+  })
+  .on("mouseout", function() {
+    d3.select(this).select("rect").attr("fill", "lightblue");
+  });
+
 sidebarButtons
   .append("text")
   .attr("x", sidebarButtonWidth / 2)
@@ -92,62 +110,80 @@ sidebarButtons
 
 // Click event handler for the buttons
 function handleClick(d) {
-  // Remove any existing SVG elements
-  svg.selectAll(".ellipses").remove();
-  svg.selectAll(".arrow").remove();
-
+  // Hide all the SVGs
   if (d === "Robot") {
-    // Create SVG elements for Robot button
-    const centerX = svgWidth / 2;
-    const centerY = svgHeight / 2;
-    const radiusX = 100;
-    const radiusY = 50;
-
-    const ellipses = svg
-      .append("g")
-      .attr("class", "ellipses");
-
-    ellipses
-      .append("ellipse")
-      .attr("cx", centerX - 200)
-      .attr("cy", centerY)
-      .attr("rx", radiusX)
-      .attr("ry", radiusY)
-      .attr("fill", "lightblue")
-      .attr("stroke", "black")
-      .attr("stroke-width", 2);
-
-    ellipses
-      .append("ellipse")
-      .attr("cx", centerX + 200)
-      .attr("cy", centerY)
-      .attr("rx", radiusX)
-      .attr("ry", radiusY)
-      .attr("fill", "lightblue")
-      .attr("stroke", "black")
-      .attr("stroke-width", 2);
-
-    svg
-      .append("path")
-      .attr("class", "arrow")
-      .attr("d", `M ${centerX - 200 + radiusX} ${centerY} L ${centerX + 200 - radiusX} ${centerY}`)
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("stroke-width", 2)
-      .attr("marker-end", "url(#arrowhead)");
+    // Show the elliptical SVGs
+    d3.selectAll(".elliptical-svg").style("display", "block");
+  } else {
+    // Handle other button clicks here
   }
 }
 
-// Define the marker for the arrowhead
+// Add lightblue ellipse SVG in the middle of the screen, that is wider than it is tall
+const ellipse1 = svg
+  .append("ellipse")
+  .attr("cx", svgWidth / 2 - 200)
+  .attr("cy", svgHeight / 2 - 100)
+  .attr("rx", 100)
+  .attr("ry", 50)
+  .attr("fill", "lightblue")
+  .attr("stroke", "black")
+  .attr("stroke-width", 1);
+
 svg
-  .append("defs")
-  .append("marker")
-  .attr("id", "arrowhead")
-  .attr("refX", 6)
-  .attr("refY", 2)
-  .attr("markerWidth", 6)
-  .attr("markerHeight", 4)
-  .attr("orient", "auto")
+  .append("text")
+  .text("UV treatment")
+  .attr("x", svgWidth / 2 - 200)
+  .attr("y", svgHeight / 2 - 100)
+  .attr("text-anchor", "middle")
+  .attr("dominant-baseline", "central")
+  .attr("font-size", 24);
+
+// Add another ellipse at the same height as the first one, but to the right of it
+const ellipse2 = svg
+  .append("ellipse")
+  .attr("cx", svgWidth / 2 + 200)
+  .attr("cy", svgHeight / 2 - 100)
+  .attr("rx", 100)
+  .attr("ry", 50)
+  .attr("fill", "lightblue")
+  .attr("stroke", "black")
+  .attr("stroke-width", 1);
+
+svg
+  .append("text")
+  .text("UV stop")
+  .attr("x", svgWidth / 2 + 200)
+  .attr("y", svgHeight / 2 - 100)
+  .attr("text-anchor", "middle")
+  .attr("dominant-baseline", "central")
+  .attr("font-size", 24);
+
+// Add link between the two ellipses
+const link = svg
+  .append("line")
+  .attr("x1", svgWidth / 2 - 100)
+  .attr("y1", svgHeight / 2 - 100)
+  .attr("x2", svgWidth / 2 + 100)
+  .attr("y2", svgHeight / 2 - 100)
+  .attr("stroke", "black")
+  .attr("stroke-width", 1);
+
+// Add label that is slightly above the line
+svg
+  .append("text")
+  .text("Restart")
+  .attr("x", svgWidth / 2)
+  .attr("y", svgHeight / 2 - 120)
+  .attr("text-anchor", "middle")
+  .attr("dominant-baseline", "central")
+  .attr("font-size", 24);
+
+// Add link that curves smoothly over the top of the ellipses, from the top of the ellipses
+const curve = svg
   .append("path")
-  .attr("d", "M 0,0 V 4 L6,2 Z")
-  .attr("fill", "black");
+  .attr("d", `M ${svgWidth / 2 - 180} ${svgHeight / 2 - 150} C ${svgWidth / 2 - 100} ${svgHeight / 2 - 200}, ${svgWidth / 2 + 100} ${svgHeight / 2 - 200}, ${svgWidth / 2 + 100} ${svgHeight / 2 - 150}`)
+  .attr("fill", "none")
+  .attr("stroke", "black")
+  .attr("stroke-width", 1);
+
