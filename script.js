@@ -12,7 +12,7 @@ const banner = svg
   .attr("y", 0)
   .attr("width", svgWidth)
   .attr("height", 50)
-  .attr("fill", "beige")
+  .attr("fill", "#f5e9dc")
   .attr("stroke", "black")
   .attr("stroke-width", 0);
 
@@ -23,7 +23,7 @@ const sidebar = svg
   .attr("y", 50)
   .attr("width", 200)
   .attr("height", svgHeight - 50)
-  .attr("fill", "beige")
+  .attr("fill", "#f5e9dc")
   .attr("stroke", "black")
   .attr("stroke-width", 0);
 
@@ -46,7 +46,7 @@ bannerButtons
   .append("rect")
   .attr("width", bannerButtonWidth)
   .attr("height", bannerButtonHeight)
-  .attr("fill", "lightblue")
+  .attr("fill", "lightpink")
   .attr("stroke", "black")
   .attr("stroke-width", 1)
   .on("click", handleClick); // Move the click event handler here
@@ -77,7 +77,7 @@ sidebarButtons
   .append("rect")
   .attr("width", sidebarButtonWidth)
   .attr("height", sidebarButtonHeight)
-  .attr("fill", "lightblue")
+  .attr("fill", "lightpink")
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
@@ -87,7 +87,7 @@ sidebarButtons
     d3.select(this).select("rect").attr("fill", "lightgreen");
   })
   .on("mouseout", function() {
-    d3.select(this).select("rect").attr("fill", "lightblue");
+    d3.select(this).select("rect").attr("fill", "lightpink");
   });
 
 // Add hover effect to the bannerbuttons
@@ -96,7 +96,7 @@ bannerButtons
     d3.select(this).select("rect").attr("fill", "lightgreen");
   })
   .on("mouseout", function() {
-    d3.select(this).select("rect").attr("fill", "lightblue");
+    d3.select(this).select("rect").attr("fill", "lightpink");
   });
 
 sidebarButtons
@@ -119,22 +119,43 @@ function handleClick(d) {
   }
 }
 
+// Constant ellipse parameters for radii
+const ellipseRadiusX = 100;
+const ellipseRadiusY = 50;
+
+// Get the center coordinates of ellipse1 and ellipse2
+const ellipse1CenterX = svgWidth / 2 - 200; // Update to move ellipses
+const ellipse1CenterY = svgHeight / 2 + 100; // Update to move ellipses
+const ellipse2CenterX = svgWidth / 2 + 200; // Update to move ellipses
+const ellipse2CenterY = svgHeight / 2 - 100; // Update to move ellipses
+
+// Calculate the difference in coordinates between the ellipse centers
+const xDiff = ellipse2CenterX - ellipse1CenterX;
+const yDiff = ellipse2CenterY - ellipse1CenterY;
+
+// Calculate control points for the curve based on ellipse positions and radii
+const controlPoint1X = ellipse1CenterX + ellipseRadiusX;
+const controlPoint1Y = ellipse1CenterY - yDiff / 2;
+
+const controlPoint2X = ellipse2CenterX - ellipseRadiusX;
+const controlPoint2Y = ellipse2CenterY - yDiff / 2;
+
 // Add lightblue ellipse SVG in the middle of the screen, that is wider than it is tall
 const ellipse1 = svg
   .append("ellipse")
-  .attr("cx", svgWidth / 2 - 200)
-  .attr("cy", svgHeight / 2 - 100)
-  .attr("rx", 100)
-  .attr("ry", 50)
-  .attr("fill", "lightblue")
+  .attr("cx", ellipse1CenterX)
+  .attr("cy", ellipse1CenterY)
+  .attr("rx", ellipseRadiusX)
+  .attr("ry", ellipseRadiusY)
+  .attr("fill", "lightpink")
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
 svg
   .append("text")
   .text("UV treatment")
-  .attr("x", svgWidth / 2 - 200)
-  .attr("y", svgHeight / 2 - 100)
+  .attr("x", ellipse1CenterX)
+  .attr("y", ellipse1CenterY)
   .attr("text-anchor", "middle")
   .attr("dominant-baseline", "central")
   .attr("font-size", 24);
@@ -142,19 +163,19 @@ svg
 // Add another ellipse at the same height as the first one, but to the right of it
 const ellipse2 = svg
   .append("ellipse")
-  .attr("cx", svgWidth / 2 + 200)
-  .attr("cy", svgHeight / 2 - 100)
-  .attr("rx", 100)
-  .attr("ry", 50)
-  .attr("fill", "lightblue")
+  .attr("cx", ellipse2CenterX)
+  .attr("cy", ellipse2CenterY)
+  .attr("rx", ellipseRadiusX)
+  .attr("ry", ellipseRadiusY)
+  .attr("fill", "lightpink")
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
 svg
   .append("text")
   .text("UV stop")
-  .attr("x", svgWidth / 2 + 200)
-  .attr("y", svgHeight / 2 - 100)
+  .attr("x", ellipse2CenterX)
+  .attr("y", ellipse2CenterY)
   .attr("text-anchor", "middle")
   .attr("dominant-baseline", "central")
   .attr("font-size", 24);
@@ -162,28 +183,75 @@ svg
 // Add link between the two ellipses
 const link = svg
   .append("line")
-  .attr("x1", svgWidth / 2 - 100)
-  .attr("y1", svgHeight / 2 - 100)
-  .attr("x2", svgWidth / 2 + 100)
-  .attr("y2", svgHeight / 2 - 100)
+  .attr("x1", ellipse1CenterX + ellipseRadiusX)
+  .attr("y1", ellipse1CenterY)
+  .attr("x2", ellipse2CenterX - ellipseRadiusX)
+  .attr("y2", ellipse2CenterY)
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
-// Add label that is slightly above the line
-svg
+// Add label that lays along the link
+const label = svg
   .append("text")
   .text("Restart")
-  .attr("x", svgWidth / 2)
-  .attr("y", svgHeight / 2 - 120)
+  .attr("font-size", 24)
   .attr("text-anchor", "middle")
   .attr("dominant-baseline", "central")
-  .attr("font-size", 24);
+  .attr("dy", "-0.5em"); // Adjust the vertical position of the label upwards
 
-// Add link that curves smoothly over the top of the ellipses, from the top of the ellipses
+// Create a text path along the link using <textPath> element
+const textPath = label
+  .append("textPath")
+  .attr("href", "#link") // Reference the link by its id
+  .attr("startOffset", "50%") // Start the label at the middle of the link
+  .text("Label");
+
+// Add the link between the two ellipses
+const linkStraight1 = svg
+  .append("line")
+  .attr("id", "link") // Give the link an id for referencing in textPath
+  .attr("x1", ellipse1CenterX + ellipseRadiusX)
+  .attr("y1", ellipse1CenterY)
+  .attr("x2", ellipse2CenterX - ellipseRadiusX)
+  .attr("y2", ellipse2CenterY)
+  .attr("stroke", "black")
+  .attr("stroke-width", 1);
+
+// Update the label's position and orientation based on the link's slope
+function updateLabelPosition() {
+  const x1 = parseFloat(link.attr("x1"));
+  const y1 = parseFloat(link.attr("y1"));
+  const x2 = parseFloat(link.attr("x2"));
+  const y2 = parseFloat(link.attr("y2"));
+
+  const labelX = (x1 + x2) / 2; // Position the label at the middle of the link
+  const labelY = (y1 + y2) / 2;
+
+  const labelAngle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI); // Calculate the angle of the link
+
+  label.attr("transform", `translate(${labelX}, ${labelY}) rotate(${labelAngle})`);
+}
+
+// Call the updateLabelPosition function initially and whenever the link positions change
+updateLabelPosition();
+
+
+// Add link that curves smoothly over the top of the ellipses, forming a half-circle
 const curve = svg
   .append("path")
-  .attr("d", `M ${svgWidth / 2 - 180} ${svgHeight / 2 - 150} C ${svgWidth / 2 - 100} ${svgHeight / 2 - 200}, ${svgWidth / 2 + 100} ${svgHeight / 2 - 200}, ${svgWidth / 2 + 100} ${svgHeight / 2 - 150}`)
+  .attr("d", `M ${ellipse1CenterX} ${ellipse1CenterY - ellipseRadiusY} A ${ellipseRadiusX} ${ellipseRadiusY} 0 0 1 ${ellipse2CenterX} ${ellipse2CenterY - ellipseRadiusY}`)
   .attr("fill", "none")
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
+/*
+// Add label that is slightly above the curve
+svg
+  .append("text")
+  .text("event 1")
+  .attr("x", svgWidth / 2)
+  .attr("y", svgHeight / 2 - 200)
+  .attr("text-anchor", "middle")
+  .attr("dominant-baseline", "central")
+  .attr("font-size", 24);
+*/
