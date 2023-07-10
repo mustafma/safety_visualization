@@ -1,0 +1,9 @@
+{"links":[
+{"source":"","target":"","type":""},
+{"source":"","target":"","type":""}
+],
+"nodes":[
+{"name":"UV treatment","id":1},
+{"name":"UV stop","id":2}
+]
+}

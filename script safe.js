@@ -1,87 +1,3 @@
-// Code for the Robot visualization
-/*
-data = json.load(open(robot.json))
-links = data['links']
-nodes = data['nodes']
-
-graph = Graph()
-*/
-
-var random = d3.randomNormal(100, 100);
-var RobotContainer = d3.select('#visualisation');
-
-var WIDTH = 1000;
-var HEIGHT = 500;
-
-var x = d3.scaleLinear().range([0, WIDTH]);
-
-var y = d3.scaleLinear().range([HEIGHT, 0]);
-
-var line = d3.line()
-  .x(function(d) {
-    return x(d.x);
-  })
-  .y(function(d) {
-    return y(d.y);
-  });
-
-function chart(lineData) {
-  var merged = d3.merge(lineData);
-  x = x.domain(d3.extent(merged, function(d) {
-    return d.x;
-  }));
-  y = y.domain(d3.extent(merged, function(d) {
-    return d.y;
-  }));
-
-  // Data join
-  var join = RobotContainer.selectAll("g")
-    .data(lineData);
-
-  // Enter
-  var enter = join.enter()
-    .append("g");
-
-  enter.append("path")
-    .attr('stroke', 'blue')
-    .attr('stroke-width', 2)
-    .attr('fill', 'none');
-
-  // Update
-  join.select("path")
-    .attr('d', line);
-
-  join.exit().remove();
-
-  var circles = join.selectAll("circle")
-    .data(function(d) { return d; });
-
-  circles.enter()
-    .append('circle')
-    .attr("r", 10)
-    .attr('fill', 'blue');
-
-  circles.attr("cx", function(d) { return x(d.x); })
-    .attr("cy", function(d) { return y(d.y); });
-  circles.exit().remove();
-}
-
-setInterval(function() {
-  var data = [];
-  var row = [];
-  for (var x = 0; x < (100 * Math.random()) + 100; x += 20) {
-    row.push({ x: x, y: random() });
-  }
-  data.push(row);
-  row = [];
-  for (var x = 0; x < (100 * Math.random()) + 100; x += 20) {
-    row.push({ x: x, y: random() });
-  }
-  data.push(row);
-
-  chart(data);
-}, 1000);
-
 // Set up the SVG container
 const svgWidth = 1520; // Increase the SVG width as needed
 const svgHeight = 1000; // Increase the SVG height as needed
@@ -194,23 +110,15 @@ sidebarButtons
 
 // Click event handler for the buttons
 function handleClick(d) {
-  const visualisation = d3.select("#visualisation");
-
+  // Hide all the SVGs
   if (d === "Robot") {
     // Show the elliptical SVGs
     d3.selectAll(".elliptical-svg").style("display", "block");
-
-    // Toggle visibility of the visualisation SVG
-    const isHidden = visualisation.style("display") === "none";
-    visualisation.style("display", isHidden ? "block" : "none");
   } else {
     // Handle other button clicks here
-    visualisation.style("display", "none"); // Hide the visualisation SVG for other buttons
   }
 }
 
-
-/*
 // Constant ellipse parameters for radii
 const ellipseRadiusX = 100;
 const ellipseRadiusY = 50;

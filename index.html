@@ -12,7 +12,18 @@
     .sidebar-button rect {
     cursor: pointer;
     }
-
+    #container {
+      display: flex;
+      justify-content: center;
+      /*place container 500pixels from top and left side*/
+      position: absolute;
+      top: 250px;
+      left: 400px;
+      height: 100vh; /* Set the container height to full viewport height */
+    }
+    #visualisation {
+      border: 2px solid black; /* Add a border to the SVG container */
+    }
     /*.circular-svg {
     display: none;
     }*/
@@ -22,6 +33,9 @@
 </head>
 <body>
   <svg id="svgContainer"></svg>
+  <div id="container">
+    <svg id="visualisation" width="1000" height="500"></svg>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
