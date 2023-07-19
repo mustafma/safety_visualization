@@ -5,37 +5,55 @@
   <title>Robot monitoring mind map</title>
   <style>
     body {
-      background-color: #f5e9dc;; /* Set the background color of the HTML body */
+      background-color: #f5e9dc;
     }
-    .button rect,
-    .banner-button rect,
-    .sidebar-button rect {
-    cursor: pointer;
+    .button {
+      cursor: pointer;
+      background-color: lightblue;
+      border: 1px solid black;
+      padding: 8px 150px;
+      font-size: 20px;
+    }
+    .video-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+    .video-element {
+      max-width: 100%;
+      max-height: 100%;
     }
     #container {
       display: flex;
       justify-content: center;
-      /*place container 500pixels from top and left side*/
       position: absolute;
-      top: 250px;
-      left: 400px;
-      height: 100vh; /* Set the container height to full viewport height */
+      top: 80px;
+      left: 200px;
+      height: calc(100vh - 150px);
     }
     #visualisation {
-      border: 2px solid black; /* Add a border to the SVG container */
+      border: 2px solid rgb(62, 148, 210);
+      width: 1000px;
+      height: 600px;
     }
-    /*.circular-svg {
-    display: none;
-    }*/
-
   </style>
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-  <svg id="svgContainer"></svg>
-  <div id="container">
-    <svg id="visualisation" width="1000" height="500"></svg>
+  <div id="buttons">
+    <button class="button" onclick="handleClick('Robot')" onmouseover="handleMouseOver(this)" onmouseout="onMouseOut(this)">Robot</button>
+    <button class="button" onclick="handleClick('HDS')" onmouseover="handleMouseOver(this)" onmouseout="onMouseOut(this)">HDS</button>
+    <button class="button" onclick="handleClick('Motor')" onmouseover="handleMouseOver(this)" onmouseout="onMouseOut(this)">Motor</button>
+    <button class="button" onclick="handleClick('LOGS')" onmouseover="handleMouseOver(this)" onmouseout="onMouseOut(this)">LOGS</button>
   </div>
+  <div id="container">
+    <svg id="visualisation" width="1000" height="800"></svg>
+  </div>
+  <div id="hdsContainer">
+    <video id="videoElement" src="" width="640" height="480"></video>
+  </div>  
   <script src="script.js"></script>
 </body>
 </html>

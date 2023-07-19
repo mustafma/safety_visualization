@@ -1,225 +1,44 @@
-// Code for the Robot visualization
-/*
-data = json.load(open(robot.json))
-links = data['links']
-nodes = data['nodes']
-
-graph = Graph()
-*/
-
-var random = d3.randomNormal(100, 100);
-var RobotContainer = d3.select('#visualisation');
-
-var WIDTH = 1000;
-var HEIGHT = 500;
-
-var x = d3.scaleLinear().range([0, WIDTH]);
-
-var y = d3.scaleLinear().range([HEIGHT, 0]);
-
-var line = d3.line()
-  .x(function(d) {
-    return x(d.x);
-  })
-  .y(function(d) {
-    return y(d.y);
-  });
-
-function chart(lineData) {
-  var merged = d3.merge(lineData);
-  x = x.domain(d3.extent(merged, function(d) {
-    return d.x;
-  }));
-  y = y.domain(d3.extent(merged, function(d) {
-    return d.y;
-  }));
-
-  // Data join
-  var join = RobotContainer.selectAll("g")
-    .data(lineData);
-
-  // Enter
-  var enter = join.enter()
-    .append("g");
-
-  enter.append("path")
-    .attr('stroke', 'blue')
-    .attr('stroke-width', 2)
-    .attr('fill', 'none');
-
-  // Update
-  join.select("path")
-    .attr('d', line);
-
-  join.exit().remove();
-
-  var circles = join.selectAll("circle")
-    .data(function(d) { return d; });
-
-  circles.enter()
-    .append('circle')
-    .attr("r", 10)
-    .attr('fill', 'blue');
-
-  circles.attr("cx", function(d) { return x(d.x); })
-    .attr("cy", function(d) { return y(d.y); });
-  circles.exit().remove();
-}
-
-setInterval(function() {
-  var data = [];
-  var row = [];
-  for (var x = 0; x < (100 * Math.random()) + 100; x += 20) {
-    row.push({ x: x, y: random() });
-  }
-  data.push(row);
-  row = [];
-  for (var x = 0; x < (100 * Math.random()) + 100; x += 20) {
-    row.push({ x: x, y: random() });
-  }
-  data.push(row);
-
-  chart(data);
-}, 1000);
-
-// Set up the SVG container
-const svgWidth = 1520; // Increase the SVG width as needed
-const svgHeight = 1000; // Increase the SVG height as needed
-const svg = d3.select("#svgContainer")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight);
-
-// Define a banner as a rectangle with outlining with specific thickness that spans all along top of the screen
-const banner = svg
-  .append("rect")
-  .attr("x", 0)
-  .attr("y", 0)
-  .attr("width", svgWidth)
-  .attr("height", 50)
-  .attr("fill", "#f5e9dc")
-  .attr("stroke", "black")
-  .attr("stroke-width", 0);
-
-// Define a sidebar as a rectangle with outlining with specific thickness that spans all along left of the screen
-const sidebar = svg
-  .append("rect")
-  .attr("x", 0)
-  .attr("y", 50)
-  .attr("width", 200)
-  .attr("height", svgHeight - 50)
-  .attr("fill", "#f5e9dc")
-  .attr("stroke", "black")
-  .attr("stroke-width", 0);
-
-// Define the button labels
-const bannerButtonLabels = ["Robot", "HDS", "Motor", "LOGS"];
-const sidebarButtonLabels = ["Settings", "Specs Definition"];
-
-// Append buttons inside the banner
-const bannerButtonWidth = svgWidth / bannerButtonLabels.length;
-const bannerButtonHeight = 40;
-
-const bannerButtons = svg.selectAll(".banner-button")
-  .data(bannerButtonLabels)
-  .enter()
-  .append("g")
-  .attr("class", "banner-button")
-  .attr("transform", (d, i) => `translate(${bannerButtonWidth * i}, 5)`);
-
-bannerButtons
-  .append("rect")
-  .attr("width", bannerButtonWidth)
-  .attr("height", bannerButtonHeight)
-  .attr("fill", "lightpink")
-  .attr("stroke", "black")
-  .attr("stroke-width", 1)
-  .on("click", handleClick); // Move the click event handler here
-
-bannerButtons
-  .append("text")
-  .attr("x", bannerButtonWidth / 2)
-  .attr("y", bannerButtonHeight / 2)
-  .attr("text-anchor", "middle")
-  .attr("dy", "0.35em")
-  .text(d => d)
-  .attr("font-size", 20);
-
-// Append buttons inside the sidebar
-const sidebarButtonWidth = 180;
-const sidebarButtonHeight = 40;
-const sidebarButtonMargin = 10;
-
-const sidebarButtons = svg.selectAll(".sidebar-button")
-  .data(sidebarButtonLabels)
-  .enter()
-  .append("g")
-  .attr("class", "sidebar-button")
-  .attr("transform", (d, i) => `translate(10, ${50 + sidebarButtonMargin + (sidebarButtonHeight + sidebarButtonMargin) * i})`)
-  .on("click", handleClick); // Add click event handler if needed
-
-sidebarButtons
-  .append("rect")
-  .attr("width", sidebarButtonWidth)
-  .attr("height", sidebarButtonHeight)
-  .attr("fill", "lightpink")
-  .attr("stroke", "black")
-  .attr("stroke-width", 1);
-
-// Add hover effect to the sidebarbuttons
-sidebarButtons
-  .on("mouseover", function() {
-    d3.select(this).select("rect").attr("fill", "lightgreen");
-  })
-  .on("mouseout", function() {
-    d3.select(this).select("rect").attr("fill", "lightpink");
-  });
-
-// Add hover effect to the bannerbuttons
-bannerButtons
-  .on("mouseover", function() {
-    d3.select(this).select("rect").attr("fill", "lightgreen");
-  })
-  .on("mouseout", function() {
-    d3.select(this).select("rect").attr("fill", "lightpink");
-  });
-
-sidebarButtons
-  .append("text")
-  .attr("x", sidebarButtonWidth / 2)
-  .attr("y", sidebarButtonHeight / 2)
-  .attr("text-anchor", "middle")
-  .attr("dy", "0.35em")
-  .text(d => d)
-  .attr("font-size", 20);
-
 // Click event handler for the buttons
-function handleClick(d) {
+function handleClick(buttonLabel) {
   const visualisation = d3.select("#visualisation");
 
-  if (d === "Robot") {
-    // Show the elliptical SVGs
-    d3.selectAll(".elliptical-svg").style("display", "block");
-
+  if (buttonLabel === "Robot") {
     // Toggle visibility of the visualisation SVG
     const isHidden = visualisation.style("display") === "none";
     visualisation.style("display", isHidden ? "block" : "none");
   } else {
     // Handle other button clicks here
-    visualisation.style("display", "none"); // Hide the visualisation SVG for other buttons
   }
 }
 
+// Hover function for the buttons to make them green
+function handleMouseOver(button) {
+  d3.select(button).style("background-color", "lightgreen");
+}
 
-/*
+function onMouseOut(button) {
+  d3.select(button).style("background-color", "lightblue");
+}
+
+var RobotContainer = d3.select('#visualisation');
+
+var HDSContainer = d3.select('#hdsContainer');
+var videoElement = HDSContainer.select('#videoElement').node();
+
+setInterval(function() {
+  videoElement.src = "/stream?" + new Date().getTime();
+}, 50);
+
+
 // Constant ellipse parameters for radii
-const ellipseRadiusX = 100;
-const ellipseRadiusY = 50;
+const ellipseRadiusX = 75;
+const ellipseRadiusY = 40;
 
-// Get the center coordinates of ellipse1 and ellipse2
-const ellipse1CenterX = svgWidth / 2 - 200; // Update to move ellipses
-const ellipse1CenterY = svgHeight / 2 + 100; // Update to move ellipses
-const ellipse2CenterX = svgWidth / 2 + 200; // Update to move ellipses
-const ellipse2CenterY = svgHeight / 2 - 100; // Update to move ellipses
+// Get the center coordinates of ellipse1 and ellipse2 based on the center of the RobotContainer svg
+const ellipse1CenterX = RobotContainer.attr("width") / 2 - 200;
+const ellipse1CenterY = RobotContainer.attr("height") / 2 - 200;
+const ellipse2CenterX = RobotContainer.attr("width") / 2 + 200;
+const ellipse2CenterY = RobotContainer.attr("height") / 2 - 200;
 
 // Calculate the difference in coordinates between the ellipse centers
 const xDiff = ellipse2CenterX - ellipse1CenterX;
@@ -233,17 +52,17 @@ const controlPoint2X = ellipse2CenterX - ellipseRadiusX;
 const controlPoint2Y = ellipse2CenterY - yDiff / 2;
 
 // Add lightblue ellipse SVG in the middle of the screen, that is wider than it is tall
-const ellipse1 = svg
+const ellipse1 = RobotContainer
   .append("ellipse")
   .attr("cx", ellipse1CenterX)
   .attr("cy", ellipse1CenterY)
   .attr("rx", ellipseRadiusX)
   .attr("ry", ellipseRadiusY)
-  .attr("fill", "lightpink")
+  .attr("fill", "lightblue")
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
-svg
+RobotContainer
   .append("text")
   .text("UV treatment")
   .attr("x", ellipse1CenterX)
@@ -253,17 +72,17 @@ svg
   .attr("font-size", 24);
 
 // Add another ellipse at the same height as the first one, but to the right of it
-const ellipse2 = svg
+const ellipse2 = RobotContainer
   .append("ellipse")
   .attr("cx", ellipse2CenterX)
   .attr("cy", ellipse2CenterY)
   .attr("rx", ellipseRadiusX)
   .attr("ry", ellipseRadiusY)
-  .attr("fill", "lightpink")
+  .attr("fill", "lightblue")
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
-svg
+RobotContainer
   .append("text")
   .text("UV stop")
   .attr("x", ellipse2CenterX)
@@ -273,7 +92,7 @@ svg
   .attr("font-size", 24);
 
 // Add link between the two ellipses
-const link = svg
+const link = RobotContainer
   .append("line")
   .attr("x1", ellipse1CenterX + ellipseRadiusX)
   .attr("y1", ellipse1CenterY)
@@ -283,7 +102,7 @@ const link = svg
   .attr("stroke-width", 1);
 
 // Add label that lays along the link
-const label = svg
+const label = RobotContainer
   .append("text")
   .text("Restart")
   .attr("font-size", 24)
@@ -299,7 +118,7 @@ const textPath = label
   .text("Label");
 
 // Add the link between the two ellipses
-const linkStraight1 = svg
+const linkStraight1 = RobotContainer
   .append("line")
   .attr("id", "link") // Give the link an id for referencing in textPath
   .attr("x1", ellipse1CenterX + ellipseRadiusX)
@@ -329,21 +148,19 @@ updateLabelPosition();
 
 
 // Add link that curves smoothly over the top of the ellipses, forming a half-circle
-const curve = svg
+const curve = RobotContainer
   .append("path")
   .attr("d", `M ${ellipse1CenterX} ${ellipse1CenterY - ellipseRadiusY} A ${ellipseRadiusX} ${ellipseRadiusY} 0 0 1 ${ellipse2CenterX} ${ellipse2CenterY - ellipseRadiusY}`)
   .attr("fill", "none")
   .attr("stroke", "black")
   .attr("stroke-width", 1);
 
-/*
 // Add label that is slightly above the curve
-svg
+RobotContainer
   .append("text")
   .text("event 1")
-  .attr("x", svgWidth / 2)
-  .attr("y", svgHeight / 2 - 200)
+  .attr("x", (ellipse1CenterX + ellipse2CenterX) / 2)
+  .attr("y", ellipse1CenterY - ellipseRadiusY - xDiff/3.5)
   .attr("text-anchor", "middle")
-  .attr("dominant-baseline", "central")
+  .attr("dominant-baseline", "bottom")
   .attr("font-size", 24);
-*/
